@@ -1,31 +1,38 @@
 package gephi_http_client
 
-import "net/http"
+import (
+	"bytes"
+	"fmt"
+	"net/http"
+)
 
 type GephiClient struct {
-	Client *http.Client
 	Node
 	Edge
 }
 
+func NewGephiClient(client *http.Client, host, workspace string) (*GephiClient, error) {
+	buf := bytes.NewBuffer(make([]byte, 1024))
+	url := fmt.Sprintf("http://%s/%s?operation=updateGraph", host, workspace)
+	_, err := client.Post(url, "application/json", buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return &GephiClient{
+		Node: newNode(buf),
+		Edge: newEdge(buf),
+	}, nil
+}
+
 type Node interface {
-	NodeAdd(node interface{}) error
-	NodesAdd(node []interface{}) error
-	NodeChange(node interface{}) error
-	NodesChange(node []interface{}) error
-	NodeDelete(node interface{}) error
-	NodesDelete(node []interface{}) error
-	NodeGet(node interface{}) (interface{}, error)
-	NodesGet(node []interface{}) ([]interface{}, error)
+	NodeAdd(node ...interface{}) error
+	NodeChange(node ...interface{}) error
+	NodeDelete(node ...interface{}) error
 }
 
 type Edge interface {
-	EdgeAdd(edge interface{}) error
-	EdgesAdd(edge []interface{}) error
-	EdgeChange(edge interface{}) error
-	EdgesChange(edge []interface{}) error
-	EdgeDelete(edge interface{}) error
-	EdgesDelete(edge []interface{}) error
-	EdgeGet(edge interface{}) (interface{}, error)
-	EdgesGet(edge []interface{}) ([]interface{}, error)
+	EdgeAdd(edge ...interface{}) error
+	EdgeChange(edge ...interface{}) error
+	EdgeDelete(edge ...interface{}) error
 }

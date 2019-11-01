@@ -1,41 +1,34 @@
 package gephi_http_client
 
+import (
+	"bytes"
+	"encoding/json"
+)
+
 type node struct {
-	c *gclient
+	enc *json.Encoder
 }
 
-func newNode(c *gclient) Node {
-	return &node{c}
+func newNode(buf *bytes.Buffer) Node {
+	return &node{json.NewEncoder(buf)}
 }
 
-func (n *node) NodeAdd(node interface{}) error {
+func (n *node) NodeAdd(node ...interface{}) error {
+	return n.marshal("an", node)
+}
+
+func (n *node) NodeChange(node ...interface{}) error {
+	return n.marshal("cn", node)
+}
+
+func (n *node) NodeDelete(node ...interface{}) error {
+	return n.marshal("dn", node)
+}
+
+func (n *node) NodeGet(node ...interface{}) (interface{}, error) {
 	panic("implement me")
 }
 
-func (n *node) NodesAdd(node []interface{}) error {
-	panic("implement me")
-}
-
-func (n *node) NodeChange(node interface{}) error {
-	panic("implement me")
-}
-
-func (n *node) NodesChange(node []interface{}) error {
-	panic("implement me")
-}
-
-func (n *node) NodeDelete(node interface{}) error {
-	panic("implement me")
-}
-
-func (n *node) NodesDelete(node []interface{}) error {
-	panic("implement me")
-}
-
-func (n *node) NodeGet(node interface{}) (interface{}, error) {
-	panic("implement me")
-}
-
-func (n *node) NodesGet(node []interface{}) ([]interface{}, error) {
-	panic("implement me")
+func (n *node) marshal(operation string, o []interface{}) error {
+	return marshal(n.enc, operation, o)
 }
