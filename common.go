@@ -57,33 +57,65 @@ func (g *gephiClient) Close() error {
 	return g.w.Close()
 }
 
-func (g *gephiClient) marshal(operation string, obj ...interface{}) error {
+func (g *gephiClient) marshal(operation string, obj interface{}) error {
 	var err error
 	m := make(map[string]interface{})
 
-	for _, o := range obj {
-		if n, ok := o.(Node); ok {
+	if nodes, ok := obj.([]Node); ok {
+		for _, n := range nodes {
 			err = n.validate()
 			if err != nil {
 				return err
 			}
 			m[operation] = n
-		} else if e, ok := o.(Edge); ok {
+			err = g.enc.Encode(m)
+			if err != nil {
+				return err
+			}
+			delete(m, operation)
+		}
+		return nil
+
+	} else if edges, ok := obj.([]Edge); ok {
+		for _, e := range edges {
 			err = e.validate()
 			if err != nil {
 				return err
 			}
 			m[operation] = e
-		} else {
-			return fmt.Errorf("unknown type of object")
+			err = g.enc.Encode(m)
+			if err != nil {
+				return err
+			}
+			delete(m, operation)
 		}
+		return nil
 
-		err = g.enc.Encode(m)
-		if err != nil {
-			return err
-		}
-		delete(m, operation)
 	}
+	return fmt.Errorf("unknown type of object")
 
-	return nil
+	//for _, o := range obj {
+	//	if n, ok := o.(Node); ok {
+	//		err = n.validate()
+	//		if err != nil {
+	//			return err
+	//		}
+	//		m[operation] = n
+	//	} else if e, ok := o.(Edge); ok {
+	//		err = e.validate()
+	//		if err != nil {
+	//			return err
+	//		}
+	//		m[operation] = e
+	//	} else {
+	//		return fmt.Errorf("unknown type of object")
+	//	}
+	//
+	//	err = g.enc.Encode(m)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	delete(m, operation)
+	//}
+
 }
