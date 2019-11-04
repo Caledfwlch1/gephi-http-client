@@ -12,19 +12,23 @@ type GephiClient interface {
 	Close() error
 }
 
-type Node struct {
-	Id    string
-	Lable string
-	X     float64
-	Y     float64
-	Size  int
-	Prop  map[string]string
-}
+type Node map[string]map[string]string
 
-type Edge struct {
-	Id       string
-	Source   string
-	Target   string
-	Directed bool
-	Weight   int
-}
+//struct {
+//	Id    string
+//	Lable string
+//	X     float64
+//	Y     float64
+//	Size  int
+//	Prop  map[string]string
+//}
+
+type Edge map[string]map[string]string
+
+//struct {
+//	Id       string
+//	Source   string
+//	Target   string
+//	Directed bool
+//	Weight   int
+//}

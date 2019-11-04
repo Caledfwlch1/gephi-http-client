@@ -19,15 +19,15 @@ func (g *gephiClient) NodeGet(node ...Node) (interface{}, error) {
 }
 
 func (n *Node) validate() error {
-	if n.Id == "" {
-		return fmt.Errorf("node %s has empty Id", n)
-	}
-	if n.Lable == "" {
-		n.Lable = n.Id
-	}
-	if n.Size <= 0 {
-		n.Size = 1
-	}
+	//if n.Id == "" {
+	//	return fmt.Errorf("node %s has empty Id", n)
+	//}
+	//if n.Lable == "" {
+	//	n.Lable = n.Id
+	//}
+	//if n.Size <= 0 {
+	//	n.Size = 1
+	//}
 	return nil
 }
 

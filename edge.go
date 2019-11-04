@@ -19,15 +19,15 @@ func (g *gephiClient) EdgeGet(edge ...Edge) (interface{}, error) {
 }
 
 func (e *Edge) validate() error {
-	if e.Id == "" {
-		return fmt.Errorf("edge %s has empty Id", e)
-	}
-	if e.Source == "" {
-		return fmt.Errorf("edge %s has empty source", e)
-	}
-	if e.Target == "" {
-		return fmt.Errorf("edge %s has empty target", e)
-	}
+	//if e.Id == "" {
+	//	return fmt.Errorf("edge %s has empty Id", e)
+	//}
+	//if e.Source == "" {
+	//	return fmt.Errorf("edge %s has empty source", e)
+	//}
+	//if e.Target == "" {
+	//	return fmt.Errorf("edge %s has empty target", e)
+	//}
 	return nil
 }
 
