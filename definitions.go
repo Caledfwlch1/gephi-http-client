@@ -7,8 +7,8 @@ import (
 )
 
 type GephiClient struct {
-	Node
-	Edge
+	NodeOperations
+	EdgeOperations
 }
 
 func NewGephiClient(client *http.Client, host, workspace string) (*GephiClient, error) {
@@ -20,19 +20,36 @@ func NewGephiClient(client *http.Client, host, workspace string) (*GephiClient, 
 	}
 
 	return &GephiClient{
-		Node: newNode(buf),
-		Edge: newEdge(buf),
+		NodeOperations: newNode(buf),
+		EdgeOperations: newEdge(buf),
 	}, nil
 }
 
-type Node interface {
-	NodeAdd(node ...interface{}) error
-	NodeChange(node ...interface{}) error
-	NodeDelete(node ...interface{}) error
+type NodeOperations interface {
+	NodeAdd(node ...Node) error
+	NodeChange(node ...Node) error
+	NodeDelete(node ...Node) error
 }
 
-type Edge interface {
-	EdgeAdd(edge ...interface{}) error
-	EdgeChange(edge ...interface{}) error
-	EdgeDelete(edge ...interface{}) error
+type EdgeOperations interface {
+	EdgeAdd(edge ...Edge) error
+	EdgeChange(edge ...Edge) error
+	EdgeDelete(edge ...Edge) error
+}
+
+type Node struct {
+	Id    string
+	Lable string
+	X     float64
+	Y     float64
+	Size  int
+	Prop  map[string]string
+}
+
+type Edge struct {
+	Id       string
+	Source   string
+	Target   string
+	Directed string
+	Weight   string
 }
