@@ -11,7 +11,8 @@ import (
 )
 
 type gephiClient struct {
-	w   *io.PipeWriter
+	//w   *io.PipeWriter
+	w   *os.File
 	enc *json.Encoder
 }
 
@@ -35,19 +36,19 @@ func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, e
 		return nil, err
 	}
 
-	r, w := io.Pipe()
+	r, _ := io.Pipe()
 	go func() {
 		defer r.Close()
 		_, _ = client.Post(url, "application/json", r)
 	}()
 
-	ww, err := os.Open("/home/andy/go/src/bitbucket.org/mywalks/go/tmp/http.txt")
+	ww, err := os.OpenFile("/home/andy/go/src/bitbucket.org/mywalks/go/tmp/http.txt", os.O_RDWR, 0666)
 	if err != nil {
 		log.Println(err)
 	}
 
 	return &gephiClient{
-		w:   w,
+		w:   ww,
 		enc: json.NewEncoder(ww),
 	}, nil
 }
