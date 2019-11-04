@@ -1,34 +1,36 @@
 package gephi_http_client
 
-import (
-	"bytes"
-	"encoding/json"
-)
+import "fmt"
 
-type edge struct {
-	enc *json.Encoder
+func (g *gephiClient) EdgeAdd(edge ...Edge) error {
+	return g.marshal("ae", edge)
 }
 
-func newEdge(buf *bytes.Buffer) EdgeOperations {
-	return &edge{json.NewEncoder(buf)}
+func (g *gephiClient) EdgeChange(edge ...Edge) error {
+	return g.marshal("ce", edge)
 }
 
-func (e *edge) EdgeAdd(edge ...Edge) error {
-	return e.marshal("ae", edge)
+func (g *gephiClient) EdgeDelete(edge ...Edge) error {
+	return g.marshal("de", edge)
 }
 
-func (e *edge) EdgeChange(edge ...Edge) error {
-	return e.marshal("ce", edge)
-}
-
-func (e *edge) EdgeDelete(edge ...Edge) error {
-	return e.marshal("de", edge)
-}
-
-func (e *edge) EdgeGet(edge ...Edge) (interface{}, error) {
+func (g *gephiClient) EdgeGet(edge ...Edge) (interface{}, error) {
 	panic("implement me")
 }
 
-func (e *edge) marshal(operation string, o ...interface{}) error {
-	return marshal(e.enc, operation, o)
+func (e *Edge) validate() error {
+	if e.Id == "" {
+		return fmt.Errorf("edge %s has empty Id", e)
+	}
+	if e.Source == "" {
+		return fmt.Errorf("edge %s has empty source", e)
+	}
+	if e.Target == "" {
+		return fmt.Errorf("edge %s has empty target", e)
+	}
+	return nil
+}
+
+func (e Edge) String() string {
+	return fmt.Sprintf("%#v", e)
 }
