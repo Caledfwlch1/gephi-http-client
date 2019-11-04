@@ -1,12 +1,6 @@
 package gephi_http_client
 
-import (
-	"net/http"
-)
-
 type GephiClient interface {
-	SetClientProp(client *http.Client)
-
 	NodeAdd(node ...Node) error
 	NodeChange(node ...Node) error
 	NodeDelete(node ...Node) error

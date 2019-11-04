@@ -9,49 +9,40 @@ import (
 )
 
 type gephiClient struct {
-	httpClient *http.Client
-	url        string
-	r          *io.PipeReader
-	w          *io.PipeWriter
-	enc        *json.Encoder
+	w   *io.PipeWriter
+	enc *json.Encoder
 }
 
 func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, error) {
-	r, w := io.Pipe()
-	out := gephiClient{
-		httpClient: client,
-		url:        fmt.Sprintf("http://%s/%s?operation=updateGraph", host, workspace),
-		r:          r,
-		w:          w,
-		enc:        json.NewEncoder(w),
+	switch "" {
+	case host:
+		return nil, fmt.Errorf("host is empty")
+	case workspace:
+		return nil, fmt.Errorf("workspace is empty")
 	}
 
-	err := out.runPost()
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	url := fmt.Sprintf("http://%s/%s?operation=updateGraph", host, workspace)
+	emptyBuf := bytes.NewBuffer([]byte{})
+
+	_, err := client.Post(url, "application/json", emptyBuf)
 	if err != nil {
 		return nil, err
 	}
 
-	return &out, nil
-}
-
-func (g *gephiClient) SetClientProp(client *http.Client) {
-	g.httpClient = client
-}
-
-func (g *gephiClient) runPost() error {
-	emptyBuf := bytes.NewBuffer([]byte{})
-
-	_, err := g.httpClient.Post(g.url, "application/json", emptyBuf)
-	if err != nil {
-		return err
-	}
-
+	r, w := io.Pipe()
 	go func() {
-		defer g.r.Close()
-		_, _ = g.httpClient.Post(g.url, "application/json", g.r)
+		defer r.Close()
+		_, _ = client.Post(url, "application/json", r)
 	}()
 
-	return nil
+	return &gephiClient{
+		w:   w,
+		enc: json.NewEncoder(w),
+	}, nil
 }
 
 func (g *gephiClient) Close() error {
