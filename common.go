@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"os"
 )
 
 type gephiClient struct {
@@ -39,9 +41,14 @@ func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, e
 		_, _ = client.Post(url, "application/json", r)
 	}()
 
+	ww, err := os.Open("/home/andy/go/src/bitbucket.org/mywalks/go/tmp/http.txt")
+	if err != nil {
+		log.Println(err)
+	}
+
 	return &gephiClient{
 		w:   w,
-		enc: json.NewEncoder(w),
+		enc: json.NewEncoder(ww),
 	}, nil
 }
 
