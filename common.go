@@ -1,6 +1,7 @@
 package gephi_http_client
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,29 +14,44 @@ type gephiClient struct {
 	r          *io.PipeReader
 	w          *io.PipeWriter
 	enc        *json.Encoder
-	postErr    error
 }
 
 func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, error) {
 	r, w := io.Pipe()
-	return &gephiClient{
+	out := gephiClient{
 		httpClient: client,
 		url:        fmt.Sprintf("http://%s/%s?operation=updateGraph", host, workspace),
 		r:          r,
 		w:          w,
 		enc:        json.NewEncoder(w),
-	}, nil
+	}
+
+	err := out.runPost()
+	if err != nil {
+		return nil, err
+	}
+
+	return &out, nil
 }
 
 func (g *gephiClient) SetClientProp(client *http.Client) {
 	g.httpClient = client
 }
 
-func (g *gephiClient) RunPost() {
+func (g *gephiClient) runPost() error {
+	emptyBuf := bytes.NewBuffer([]byte{})
+
+	_, err := g.httpClient.Post(g.url, "application/json", emptyBuf)
+	if err != nil {
+		return err
+	}
+
 	go func() {
 		defer g.r.Close()
-		_, g.postErr = g.httpClient.Post(g.url, "application/json", g.r)
+		_, _ = g.httpClient.Post(g.url, "application/json", g.r)
 	}()
+
+	return nil
 }
 
 func (g *gephiClient) Close() error {
