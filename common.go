@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -36,7 +37,10 @@ func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, e
 	r, w := io.Pipe()
 	go func() {
 		defer r.Close()
-		_, _ = client.Post(url, "application/json", r)
+		_, err = client.Post(url, "application/json", r)
+		if err != nil {
+			log.Println("PUT error:", err)
+		}
 	}()
 
 	return &gephiClient{
