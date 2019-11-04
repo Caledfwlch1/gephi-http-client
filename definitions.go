@@ -14,6 +14,9 @@ type GephiClient interface {
 	EdgeAdd(edge ...Edge) error
 	EdgeChange(edge ...Edge) error
 	EdgeDelete(edge ...Edge) error
+
+	RunPost()
+	Close() error
 }
 
 type Node struct {
