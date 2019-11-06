@@ -70,17 +70,14 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 			}
 			m[operation] = n
 
-			b, ee := json.Marshal(m) // TODO: remove
-			fmt.Println("******** ", b, ee)
-
 			err = g.enc.Encode(m)
 			if err != nil {
 				return err
 			}
-			_, err = g.w.Write([]byte{'\r'})
-			if err != nil {
-				return err
-			}
+			//_, err = g.w.Write([]byte{'\r'})
+			//if err != nil {
+			//	return err
+			//}
 			delete(m, operation)
 
 		}
@@ -101,10 +98,10 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 			if err != nil {
 				return err
 			}
-			_, err = g.w.Write([]byte{'\r'})
-			if err != nil {
-				return err
-			}
+			//_, err = g.w.Write([]byte{'\r'})
+			//if err != nil {
+			//	return err
+			//}
 			delete(m, operation)
 		}
 		return nil
