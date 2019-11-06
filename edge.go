@@ -1,6 +1,10 @@
 package gephi_http_client
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
 
 func (g *gephiClient) EdgeAdd(edge ...Edge) error {
 	return g.marshal("ae", edge)
@@ -33,4 +37,13 @@ func (e *Edge) validate() error {
 
 func (e Edge) String() string {
 	return fmt.Sprintf("%#v", e)
+}
+
+func (e *Edge) MarshalJSON() ([]byte, error) {
+	m := map[string]map[string]string(*e)
+	b, err := json.Marshal(m)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.ReplaceAll(b, []byte{'\n'}, []byte{'\r'}), nil
 }

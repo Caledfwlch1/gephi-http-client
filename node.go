@@ -1,6 +1,10 @@
 package gephi_http_client
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
 
 func (g *gephiClient) NodeAdd(node ...Node) error {
 	return g.marshal("an", node)
@@ -33,4 +37,13 @@ func (n *Node) validate() error {
 
 func (n Node) String() string {
 	return fmt.Sprintf("%#v", n)
+}
+
+func (n *Node) MarshalJSON() ([]byte, error) {
+	m := map[string]map[string]string(*n)
+	b, err := json.Marshal(m)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.ReplaceAll(b, []byte{'\n'}, []byte{'\r'}), nil
 }
