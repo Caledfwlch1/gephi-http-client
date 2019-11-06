@@ -1,6 +1,7 @@
 package gephi_http_client
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -44,6 +45,7 @@ func (n Node) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	b = bytes.TrimSpace(b)
 	fmt.Println("----------", append(b, '\r'))
 
 	return append(b, '\r'), nil
