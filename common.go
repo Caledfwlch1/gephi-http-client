@@ -14,7 +14,7 @@ type gephiClient struct {
 	enc *json.Encoder
 }
 
-func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, error) {
+func NewGephiClient(client *http.Client, host, workspace string, r *io.PipeReader, w *io.PipeWriter) (GephiClient, error) {
 	switch "" {
 	case host:
 		return nil, fmt.Errorf("host is empty")
@@ -34,7 +34,7 @@ func NewGephiClient(client *http.Client, host, workspace string) (GephiClient, e
 		return nil, err
 	}
 
-	r, w := io.Pipe()
+	//r, w := io.Pipe()
 	go func() {
 		defer r.Close()
 		_, err = client.Post(url, "application/json", r)
