@@ -1,7 +1,6 @@
 package gephi_http_client
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -45,5 +44,5 @@ func (e *Edge) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return bytes.ReplaceAll(b, []byte{'\n'}, []byte{'\r'}), nil
+	return append(b, '\r'), nil
 }
