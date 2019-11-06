@@ -44,5 +44,7 @@ func (n *Node) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("----------", append(b, '\r'))
+
 	return append(b, '\r'), nil
 }
