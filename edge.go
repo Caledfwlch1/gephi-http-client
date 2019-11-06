@@ -38,8 +38,8 @@ func (e Edge) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-func (e *Edge) MarshalJSON() ([]byte, error) {
-	m := map[string]map[string]string(*e)
+func (e Edge) MarshalJSON() ([]byte, error) {
+	m := map[string]map[string]string(e)
 	b, err := json.Marshal(m)
 	if err != nil {
 		return nil, err

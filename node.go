@@ -38,8 +38,8 @@ func (n Node) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
-func (n *Node) MarshalJSON() ([]byte, error) {
-	m := map[string]map[string]string(*n)
+func (n Node) MarshalJSON() ([]byte, error) {
+	m := map[string]map[string]string(n)
 	b, err := json.Marshal(m)
 	if err != nil {
 		return nil, err
