@@ -10,11 +10,12 @@ import (
 )
 
 type gephiClient struct {
-	w   *io.PipeWriter
-	enc *json.Encoder
+	w   io.WriteCloser
+	enc json.Encoder
 }
 
-func NewGephiClient(client *http.Client, host, workspace string, r *io.PipeReader, w *io.PipeWriter) (GephiClient, error) {
+func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser, w io.WriteCloser) (GephiClient, error) {
+	//func NewGephiClient(client *http.Client, host, workspace string, r *io.PipeReader, w *io.PipeWriter) (GephiClient, error) {
 	switch "" {
 	case host:
 		return nil, fmt.Errorf("host is empty")
@@ -45,7 +46,7 @@ func NewGephiClient(client *http.Client, host, workspace string, r *io.PipeReade
 
 	return &gephiClient{
 		w:   w,
-		enc: json.NewEncoder(w),
+		enc: *json.NewEncoder(w),
 	}, nil
 }
 
