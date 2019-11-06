@@ -71,7 +71,7 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 			m[operation] = n
 
 			b, ee := json.Marshal(&m) // TODO: remove
-			fmt.Println("******** ", string(b), ee)
+			fmt.Println("******** ", b, ee)
 
 			err = g.enc.Encode(m)
 			if err != nil {
