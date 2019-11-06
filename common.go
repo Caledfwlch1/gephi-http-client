@@ -23,6 +23,10 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 		return nil, fmt.Errorf("workspace is empty")
 	}
 
+	if r == nil || w == nil {
+		return nil, fmt.Errorf("reader or writer is nil")
+	}
+
 	if client == nil {
 		client = http.DefaultClient
 	}
