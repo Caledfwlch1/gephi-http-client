@@ -7,11 +7,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
 )
 
 type gephiClient struct {
 	w   io.WriteCloser
 	enc json.Encoder
+	wg  sync.WaitGroup
 }
 
 func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser, w io.WriteCloser) (GephiClient, error) {
@@ -39,8 +41,15 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 		return nil, err
 	}
 
+	gc := gephiClient{
+		w:   w,
+		enc: *json.NewEncoder(w),
+	}
+	gc.wg.Add(1)
+
 	//r, w := io.Pipe()
 	go func() {
+		defer gc.wg.Done()
 		defer r.Close()
 		resp, err := client.Post(url, "application/json", r)
 		if err != nil {
@@ -50,14 +59,15 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 		_ = resp.Body.Close()
 	}()
 
-	return &gephiClient{
-		w:   w,
-		enc: *json.NewEncoder(w),
-	}, nil
+	return &gc, nil
 }
 
 func (g *gephiClient) Close() error {
 	return g.w.Close()
+}
+
+func (g *gephiClient) Wait() {
+	g.wg.Wait()
 }
 
 func (g *gephiClient) marshal(operation string, obj interface{}) error {
