@@ -9,6 +9,7 @@ type GephiClient interface {
 	EdgeChange(edge ...Edge) error
 	EdgeDelete(edge ...Edge) error
 
+	Wait()
 	Close() error
 }
 
