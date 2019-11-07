@@ -97,10 +97,10 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 
 			b, err := json.Marshal(m)
 			//err = g.enc.Encode(m)
-			//if err != nil {
-			//	log.Println("lllll ", err, m)
-			//	return err
-			//}
+			if err != nil {
+				log.Println("lllll ", err, m)
+				return err
+			}
 			_, err = g.w.Write(append(b, []byte("\\r\\n")...))
 			if err != nil {
 				log.Println("lllll edge", err)
