@@ -42,10 +42,12 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 	//r, w := io.Pipe()
 	go func() {
 		defer r.Close()
-		_, err = client.Post(url, "application/json", r)
+		resp, err := client.Post(url, "application/json", r)
 		if err != nil {
 			log.Println("PUT error:", err)
 		}
+		fmt.Printf("******* PUT %#v\n", resp)
+		_ = resp.Body.Close()
 	}()
 
 	return &gephiClient{
