@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sync"
@@ -56,7 +57,12 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 			log.Println("PUT error:", err)
 		}
 		fmt.Printf("******* PUT %#v\n", resp)
-		_ = resp.Body.Close()
+		aaa, err := ioutil.ReadAll(resp.Request.Body)
+		fmt.Printf("******* PUT %s, %s\n", aaa, err)
+		err = resp.Body.Close()
+		if err != nil {
+			log.Println("PUT Body.Close error:", err)
+		}
 	}()
 
 	return &gc, nil
