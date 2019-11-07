@@ -48,6 +48,7 @@ func (n Node) MarshalJSON() ([]byte, error) {
 	fmt.Println("----------", append(b, []byte("\\r\\n")...))
 	fmt.Printf("---------- %s\n", append(b, []byte("\\r\\n")...))
 	//
-	return append(b, []byte("\r\n")...), nil
+	return append(b, []byte{0x5c, 0x72}...), nil
+	//return append(b, []byte("\r\n")...), nil
 	//return b, nil
 }
