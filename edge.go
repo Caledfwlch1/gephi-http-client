@@ -44,5 +44,5 @@ func (e Edge) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return append(b, []byte("\\r\\n")...), nil
+	return append(b, []byte("\r\n")...), nil
 }
