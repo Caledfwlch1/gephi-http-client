@@ -45,7 +45,8 @@ func (n Node) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	//b = bytes.TrimSpace(b)
-	//fmt.Println("----------", append(b, '\r'))
+	fmt.Println("----------", append(b, []byte("\\r\\n")...))
+	fmt.Printf("---------- %s\n", append(b, []byte("\\r\\n")...))
 	//
 	return append(b, []byte("\\r\\n")...), nil
 	//return b, nil
