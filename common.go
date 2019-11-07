@@ -70,16 +70,18 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 			}
 			m[operation] = n
 
-			err = g.enc.Encode(m)
+			b, err := json.Marshal(m)
+
+			//err = g.enc.Encode(m)
 			if err != nil {
 				log.Println("lllll ", err, m)
 				return err
 			}
-			//_, err = g.w.Write([]byte("\\r\\n"))
-			//if err != nil {
-			//	log.Println("lllll node r", err)
-			//	return err
-			//}
+			_, err = g.w.Write(append(b, []byte("\\r\\n")...))
+			if err != nil {
+				log.Println("lllll node", err)
+				return err
+			}
 			delete(m, operation)
 
 		}
@@ -93,16 +95,17 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 			}
 			m[operation] = e
 
-			err = g.enc.Encode(m)
-			if err != nil {
-				log.Println("lllll ", err, m)
-				return err
-			}
-			//_, err = g.w.Write([]byte("\\r\\n"))
+			b, err := json.Marshal(m)
+			//err = g.enc.Encode(m)
 			//if err != nil {
-			//	log.Println("lllll edge r", err)
+			//	log.Println("lllll ", err, m)
 			//	return err
 			//}
+			_, err = g.w.Write(append(b, []byte("\\r\\n")...))
+			if err != nil {
+				log.Println("lllll edge", err)
+				return err
+			}
 			delete(m, operation)
 		}
 		return nil
