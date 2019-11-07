@@ -75,11 +75,11 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 				log.Println("lllll ", err, m)
 				return err
 			}
-			_, err = g.w.Write([]byte("\\r\\n"))
-			if err != nil {
-				log.Println("lllll node r", err)
-				return err
-			}
+			//_, err = g.w.Write([]byte("\\r\\n"))
+			//if err != nil {
+			//	log.Println("lllll node r", err)
+			//	return err
+			//}
 			delete(m, operation)
 
 		}
@@ -98,11 +98,11 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 				log.Println("lllll ", err, m)
 				return err
 			}
-			_, err = g.w.Write([]byte("\\r\\n"))
-			if err != nil {
-				log.Println("lllll edge r", err)
-				return err
-			}
+			//_, err = g.w.Write([]byte("\\r\\n"))
+			//if err != nil {
+			//	log.Println("lllll edge r", err)
+			//	return err
+			//}
 			delete(m, operation)
 		}
 		return nil
