@@ -77,7 +77,8 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 				log.Println("lllll ", err, m)
 				return err
 			}
-			_, err = g.w.Write(append(b, []byte("\\r\\n")...))
+			aaa := append([]byte("\\r\\n"), '\n')
+			_, err = g.w.Write(append(b, aaa...))
 			if err != nil {
 				log.Println("lllll node", err)
 				return err
@@ -101,7 +102,8 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 				log.Println("lllll ", err, m)
 				return err
 			}
-			_, err = g.w.Write(append(b, []byte("\\r\\n")...))
+			aaa := append([]byte("\\r\\n"), '\n')
+			_, err = g.w.Write(append(b, aaa...))
 			if err != nil {
 				log.Println("lllll edge", err)
 				return err
