@@ -72,10 +72,12 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 
 			err = g.enc.Encode(m)
 			if err != nil {
+				log.Println("lllll ", err)
 				return err
 			}
 			_, err = g.w.Write([]byte("\r"))
 			if err != nil {
+				log.Println("lllll ", err)
 				return err
 			}
 			delete(m, operation)
@@ -93,10 +95,12 @@ func (g *gephiClient) marshal(operation string, obj interface{}) error {
 
 			err = g.enc.Encode(m)
 			if err != nil {
+				log.Println("lllll ", err)
 				return err
 			}
 			_, err = g.w.Write([]byte("\r"))
 			if err != nil {
+				log.Println("lllll ", err)
 				return err
 			}
 			delete(m, operation)
