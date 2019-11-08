@@ -1,6 +1,7 @@
 package gephi_http_client
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -52,16 +53,28 @@ func NewGephiClient(client *http.Client, host, workspace string, r io.ReadCloser
 	go func() {
 		defer gc.wg.Done()
 		defer r.Close()
-		resp, err := client.Post(url, "application/json", r)
-		if err != nil {
-			log.Println("PUT error:", err)
-		}
-		fmt.Printf("******* PUT %#v\n", resp)
-		aaa, err := ioutil.ReadAll(resp.Request.Body)
-		fmt.Printf("******* PUT %s, %s\n", aaa, err)
-		err = resp.Body.Close()
-		if err != nil {
-			log.Println("PUT Body.Close error:", err)
+
+		buf := bufio.NewReader(r)
+		for {
+			line, _, err := buf.ReadLine()
+			if err != nil {
+				if err == io.EOF {
+					break
+				}
+				log.Println("read line error:", err)
+				continue
+			}
+
+			resp, err := client.Post(url, "application/json", bytes.NewReader(line))
+			if err != nil {
+				log.Println("Post error:", err)
+			}
+			aaa, err := ioutil.ReadAll(resp.Request.Body)
+			fmt.Printf("******* resp.Request.Body %s, %s\n", aaa, err)
+			err = resp.Body.Close()
+			if err != nil {
+				log.Println("Post Body.Close error:", err)
+			}
 		}
 	}()
 
